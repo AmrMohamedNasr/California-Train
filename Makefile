@@ -1,7 +1,7 @@
 # Final program directory
 TARGET_DIR = ./bin
 # Final program name
-TARGET = matmult.out
+TARGET = caltrain_tester
 # Header files directory
 HEADER_DIR = ./
 # Header files
