@@ -49,9 +49,13 @@ void station_wait_for_train(struct station *station) {
 	pthread_mutex_lock(&station->counters_lock);
 	// Add to the number of waiting passengers
 	station->waiting_passengers_count++;
+	// Unlock the lock.
+	pthread_mutex_unlock(&station->counters_lock);
 	// Wait until you get an empty seat ticket on a train.
 	int boarded = 0;
 	while (boarded == 0) {
+		// Take lock to check/update counter.
+		pthread_mutex_lock(&station->counters_lock);
 		// If there is already a train waiting, then go catch it !, otherwise wait.
 		if (station->train_empty_places <= 0) {
 			pthread_cond_wait(&station->waiting_passengers, &station->counters_lock);
@@ -60,10 +64,10 @@ void station_wait_for_train(struct station *station) {
 		if (station->train_empty_places > 0) {
 			station->train_empty_places--;
 			boarded = 1;
-		} 
+		}
+		// Unlock the lock.
+		pthread_mutex_unlock(&station->counters_lock); 
 	}
-	// Unlock the lock.
-	pthread_mutex_unlock(&station->counters_lock);
 }
 
 // Implementation (Documented in headers).
