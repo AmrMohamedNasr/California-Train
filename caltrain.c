@@ -36,7 +36,9 @@ void station_load_train(struct station *station, int count) {
 		// Wait in the station until all passengers get on the train.
 		pthread_cond_wait(&station->train_boarded, &station->counters_lock);
 		// Update the waiting passenger count as the train leaves.
-		station->waiting_passengers_count -= station->confirmed_on_train_count;	
+		station->waiting_passengers_count -= station->confirmed_on_train_count;
+		// No empty places.
+		station->train_empty_places = 0;
 	}
 	// Unlock.
 	pthread_mutex_unlock(&station->counters_lock);
